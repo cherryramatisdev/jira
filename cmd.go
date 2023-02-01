@@ -22,7 +22,7 @@ var helpdoc string
 var Cmd = &Z.Cmd{
 	Name:        `jira`,
 	Description: helpdoc,
-	Commands:    []*Z.Cmd{help.Cmd, progressCmd, reviewCmd, viewCmd},
+	Commands:    []*Z.Cmd{help.Cmd, progressCmd, reviewCmd, viewCmd, homolCmd},
 }
 
 //go:embed progress.md
@@ -161,5 +161,19 @@ var reviewCmd = &Z.Cmd{
 		clipboard.Write(clipboard.FmtText, []byte(buf.String()))
 
 		return nil
+	},
+}
+
+var homolCmd = &Z.Cmd{
+	Name:        `homol`,
+	Usage:       `[help|<ticketid>]`,
+	Description: ``,
+	Commands:    []*Z.Cmd{help.Cmd},
+	MinArgs:     1,
+	Call: func(x *Z.Cmd, args ...string) error {
+		ticketid := args[0]
+		prefix_and_ticket := fmt.Sprintf("%s-%s", progressprefix, ticketid)
+
+		return MoveTicketStatus(prefix_and_ticket, Transitions.Homol)
 	},
 }
